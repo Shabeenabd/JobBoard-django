@@ -1,0 +1,177 @@
+{% extends 'base.html' %}
+
+{% block title %}Applications for {{ job.title }} - Job Portal{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'recruiter_dashboard' %}">Dashboard</a></li>
+            <li class="breadcrumb-item active">Applications</li>
+        </ol>
+    </nav>
+    
+    <h2>Applications for: {{ job.title }}</h2>
+    <p class="text-muted">{{ job.company }} • {{ job.location }} • Posted {{ job.posted_date|date:"M d, Y" }}</p>
+</div>
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h4 class="mb-0">
+            <i class="fas fa-users"></i> Applications ({{ applications.count }})
+        </h4>
+        <a href="{% url 'job_detail' job.pk %}" class="btn btn-outline-primary btn-sm">
+            <i class="fas fa-eye"></i> View Job Details
+        </a>
+    </div>
+    <div class="card-body">
+        {% if applications %}
+        <div class="row">
+            {% for application in applications %}
+            <div class="col-md-6 mb-4">
+                <div class="card border">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <h5 class="card-title mb-1">{{ application.full_name }}</h5>
+                                <p class="card-text text-muted mb-0">
+                                    Applied {{ application.applied_date|timesince }} ago
+                                </p>
+                            </div>
+                            <small class="text-muted">{{ application.applied_date|date:"M d, Y H:i" }}</small>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <p class="mb-1">
+                                <i class="fas fa-envelope text-primary"></i>
+                                <strong>Email:</strong> 
+                                <a href="mailto:{{ application.email }}">{{ application.email }}</a>
+                            </p>
+                            <p class="mb-1">
+                                <i class="fas fa-phone text-primary"></i>
+                                <strong>Phone:</strong> 
+                                <a href="tel:{{ application.phone }}">{{ application.phone }}</a>
+                            </p>
+                        </div>
+
+                        <!-- Resume Section -->
+                        <div class="mb-3">
+                            <h6 class="fw-bold">Resume/Experience:</h6>
+                            <div class="p-2 bg-light rounded" style="max-height: 200px; overflow-y: auto;">
+                                {{ application.resume_text|linebreaks|truncatewords:50 }}
+                            </div>
+                            {% if application.resume_text|wordcount > 50 %}
+                            <button class="btn btn-sm btn-outline-secondary mt-2" type="button" 
+                                    data-bs-toggle="modal" data-bs-target="#resumeModal{{ application.id }}">
+                                <i class="fas fa-expand-alt"></i> View Full Resume
+                            </button>
+                            {% endif %}
+                        </div>
+
+                        <!-- Cover Letter Section -->
+                        {% if application.cover_letter %}
+                        <div class="mb-3">
+                            <h6 class="fw-bold">Cover Letter:</h6>
+                            <div class="p-2 bg-light rounded" style="max-height: 150px; overflow-y: auto;">
+                                {{ application.cover_letter|linebreaks|truncatewords:30 }}
+                            </div>
+                            {% if application.cover_letter|wordcount > 30 %}
+                            <button class="btn btn-sm btn-outline-secondary mt-2" type="button" 
+                                    data-bs-toggle="modal" data-bs-target="#coverLetterModal{{ application.id }}">
+                                <i class="fas fa-expand-alt"></i> View Full Cover Letter
+                            </button>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="btn-group btn-group-sm" role="group">
+                                <a href="mailto:{{ application.email }}" class="btn btn-outline-primary" title="Send Email">
+                                    <i class="fas fa-envelope"></i>
+                                </a>
+                                <a href="tel:{{ application.phone }}" class="btn btn-outline-success" title="Call">
+                                    <i class="fas fa-phone"></i>
+                                </a>
+                            </div>
+                            <small class="text-muted">
+                                User: {{ application.applicant.username }}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resume Modal -->
+            <div class="modal fade" id="resumeModal{{ application.id }}" tabindex="-1" 
+                 aria-labelledby="resumeModalLabel{{ application.id }}" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="resumeModalLabel{{ application.id }}">
+                                {{ application.full_name }}'s Resume
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="p-3 bg-light rounded">
+                                {{ application.resume_text|linebreaks }}
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <a href="mailto:{{ application.email }}" class="btn btn-primary">
+                                <i class="fas fa-envelope"></i> Contact Applicant
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cover Letter Modal -->
+            {% if application.cover_letter %}
+            <div class="modal fade" id="coverLetterModal{{ application.id }}" tabindex="-1" 
+                 aria-labelledby="coverLetterModalLabel{{ application.id }}" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="coverLetterModalLabel{{ application.id }}">
+                                {{ application.full_name }}'s Cover Letter
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="p-3 bg-light rounded">
+                                {{ application.cover_letter|linebreaks }}
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <a href="mailto:{{ application.email }}" class="btn btn-primary">
+                                <i class="fas fa-envelope"></i> Contact Applicant
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+            <h4>No Applications Yet</h4>
+            <p class="text-muted">Applications for this job will appear here when candidates apply.</p>
+            <a href="{% url 'job_detail' job.pk %}" class="btn btn-primary">
+                <i class="fas fa-eye"></i> View Job Details
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="mt-4">
+    <a href="{% url 'recruiter_dashboard' %}" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left"></i> Back to Dashboard
+    </a>
+</div>
+{% endblock %}

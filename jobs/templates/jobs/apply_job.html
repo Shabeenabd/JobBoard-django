@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block title %}Apply for {{ job.title }} - Job Portal{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="mb-0">Apply for Position</h3>
+            </div>
+            <div class="card-body">
+                <div class="mb-4 p-3 bg-light rounded">
+                    <h5 class="mb-1">{{ job.title }}</h5>
+                    <p class="mb-1 text-muted">{{ job.company }} • {{ job.location }}</p>
+                    <small class="text-muted">{{ job.get_job_type_display }}</small>
+                </div>
+
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.full_name.id_for_label }}" class="form-label">
+                                Full Name <span class="text-danger">*</span>
+                            </label>
+                            {{ form.full_name }}
+                            {% if form.full_name.errors %}
+                                <div class="text-danger small">{{ form.full_name.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.email.id_for_label }}" class="form-label">
+                                Email Address <span class="text-danger">*</span>
+                            </label>
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                                <div class="text-danger small">{{ form.email.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.phone.id_for_label }}" class="form-label">
+                            Phone Number <span class="text-danger">*</span>
+                        </label>
+                        {{ form.phone }}
+                        {% if form.phone.errors %}
+                            <div class="text-danger small">{{ form.phone.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.resume_text.id_for_label }}" class="form-label">
+                            Resume/Experience <span class="text-danger">*</span>
+                        </label>
+                        {{ form.resume_text }}
+                        <div class="form-text">
+                            Please paste your resume content or describe your relevant experience, skills, and qualifications.
+                        </div>
+                        {% if form.resume_text.errors %}
+                            <div class="text-danger small">{{ form.resume_text.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="{{ form.cover_letter.id_for_label }}" class="form-label">
+                            Cover Letter (Optional)
+                        </label>
+                        {{ form.cover_letter }}
+                        <div class="form-text">
+                            Write a brief cover letter explaining why you're interested in this position.
+                        </div>
+                        {% if form.cover_letter.errors %}
+                            <div class="text-danger small">{{ form.cover_letter.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'job_detail' job.pk %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left"></i> Back to Job
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i> Submit Application
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ job.title }} - Job Portal{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <h1 class="h3 mb-1">{{ job.title }}</h1>
+                        <h2 class="h5 text-muted mb-0">{{ job.company }}</h2>
+                    </div>
+                    <span class="badge bg-primary fs-6">{{ job.get_job_type_display }}</span>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <p class="mb-2">
+                            <i class="fas fa-map-marker-alt text-primary"></i>
+                            <strong>Location:</strong> {{ job.location }}
+                        </p>
+                        {% if job.salary_range %}
+                        <p class="mb-2">
+                            <i class="fas fa-dollar-sign text-primary"></i>
+                            <strong>Salary:</strong> {{ job.salary_range }}
+                        </p>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6">
+                        <p class="mb-2">
+                            <i class="fas fa-calendar text-primary"></i>
+                            <strong>Posted:</strong> {{ job.posted_date|date:"F d, Y" }}
+                        </p>
+                        <p class="mb-2">
+                            <i class="fas fa-user text-primary"></i>
+                            <strong>Posted by:</strong> {{ job.posted_by.username }}
+                        </p>
+                    </div>
+                </div>
+
+                <hr>
+
+                <h4>Job Description</h4>
+                <div class="mb-4">
+                    {{ job.description|linebreaks }}
+                </div>
+
+                <h4>Requirements</h4>
+                <div class="mb-4">
+                    {{ job.requirements|linebreaks }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <h5 class="card-title">Interested in this position?</h5>
+                
+                {% if user.is_authenticated %}
+                    {% if user.userprofile.user_type == 'job_seeker' %}
+                        {% if user_applied %}
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle"></i>
+                            You have already applied for this job!
+                        </div>
+                        {% else %}
+                        <a href="{% url 'apply_job' job.pk %}" class="btn btn-primary btn-lg w-100">
+                            <i class="fas fa-paper-plane"></i> Apply Now
+                        </a>
+                        {% endif %}
+                    {% else %}
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i>
+                            Only job seekers can apply for jobs.
+                        </div>
+                    {% endif %}
+                {% else %}
+                <p class="text-muted mb-3">Please login to apply for this job</p>
+                <a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-primary">
+                    Login to Apply
+                </a>
+                <hr>
+                <p class="small text-muted">Don't have an account?</p>
+                <a href="{% url 'register' %}" class="btn btn-outline-primary">
+                    Register Now
+                </a>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-body">
+                <h6 class="card-title">Job Statistics</h6>
+                <p class="card-text">
+                    <i class="fas fa-users text-muted"></i>
+                    {{ job.applications.count }} application{{ job.applications.count|pluralize }} received
+                </p>
+                <p class="card-text">
+                    <i class="fas fa-eye text-muted"></i>
+                    Posted {{ job.posted_date|timesince }} ago
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mt-4">
+    <a href="{% url 'job_list' %}" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left"></i> Back to Job Listings
+    </a>
+</div>
+{% endblock %}
