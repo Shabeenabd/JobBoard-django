@@ -1,7 +1,9 @@
-﻿# 🏢 jobboard-django
+﻿# 🏢 Job Board - Hiring Platform
 
  A fully functional Job Portal Application built with Django. Connect talent with opportunities seamlessly!.           
 This project allows Recruiters to post jobs and manage applications, while Job Seekers can browse, search, and apply for jobs with ease.
+
+![Home](media/homepage.png)
 
 ## ✨ Features
 ### For Job Seekers 👨‍💻
@@ -83,6 +85,34 @@ Create a .env file in the root and add:
 SECRET_KEY=your_django_secret_key
 DEBUG=True
 ```
+## App Demo 📸
+
+<table>
+  <tr>
+    <td><img src="media/dashboard.png" width="800"></td>
+    <td><img src="media/job_list.png" width="800"></td>
+  </tr>
+  <tr>
+    <td><img src="media/job_list.png" width="500"></td>
+    <td><img src="media/job_list.png" width="500"></td>
+  </tr>
+</table>
+
+## 🛠️ Tech Stack
+
+- Backend: Django 
+- Frontend: Django Templates, Bootstrap/CSS
+- Database: SQLite 
+- Authentication: Django Auth system
+
+## 💡 Inspiration
+
+JobHub was built as a simple yet powerful project to explore Django’s potential in building real-world applications. It aims to make recruitment easier and smarter by bringing recruiters and job seekers to a single platform.
+
+
+
+
+
 
 
 
