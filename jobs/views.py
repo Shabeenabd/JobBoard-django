@@ -34,15 +34,15 @@ def register(request):
 def job_list(request):
     jobs = Job.objects.filter(is_active=True)
     
-    search_query = request.GET.get('search')
+    search_query = request.GET.get('search',"")
     if search_query:
         jobs = jobs.filter(title__icontains=search_query)
     
-    job_type = request.GET.get('job_type')
+    job_type = request.GET.get('job_type',"")
     if job_type:
         jobs = jobs.filter(job_type=job_type)
     
-    location = request.GET.get('location')
+    location = request.GET.get('location',"")
     if location:
         jobs = jobs.filter(location__icontains=location)
     
